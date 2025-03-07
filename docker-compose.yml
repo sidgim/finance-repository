@@ -1,0 +1,98 @@
+services:
+  database:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: finance_db
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d finance_db"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: src/main/docker/Dockerfile.native
+    container_name: user_service
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DB_URL: postgresql://database:5432/finance_db
+      DB_USER: user_service
+      DB_PASSWORD: user_pass
+    ports:
+      - "8081:8080"
+
+  account-service:
+    build:
+      context: ./account-service
+      dockerfile: src/main/docker/Dockerfile.native
+    container_name: account_service
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DB_URL: postgresql://database:5432/finance_db
+      DB_USER: account_service
+      DB_PASSWORD: account_pass
+    ports:
+      - "8082:8080"
+
+  transaction-service:
+    build:
+      context: ./transaction-service
+      dockerfile: src/main/docker/Dockerfile.native
+    container_name: transaction_service
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DB_URL: postgresql://database:5432/finance_db
+      DB_USER: transaction_service
+      DB_PASSWORD: transaction_pass
+    ports:
+      - "8083:8080"
+
+  category-service:
+    build:
+      context: ./category-service
+      dockerfile: src/main/docker/Dockerfile.native
+    container_name: category_service
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DB_URL: postgresql://database:5432/finance_db
+      DB_USER: category_service
+      DB_PASSWORD: category_pass
+    ports:
+      - "8084:8080"
+
+volumes:
+  pg_data:
