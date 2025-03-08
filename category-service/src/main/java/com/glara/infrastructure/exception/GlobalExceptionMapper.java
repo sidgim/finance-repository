@@ -1,5 +1,7 @@
 package com.glara.infrastructure.exception;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -12,26 +14,27 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Override
     public Response toResponse(Throwable exception) {
-        // Evitar capturar WebApplicationException, ya que otro mapper lo maneja
-        if (exception instanceof jakarta.ws.rs.WebApplicationException) {
-            return ((jakarta.ws.rs.WebApplicationException) exception).getResponse();
+        int status = Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(); // 500 por defecto
+        String message = "Ocurrió un error inesperado";
+
+        if (exception instanceof ConstraintViolationException) {
+            status = Response.Status.BAD_REQUEST.getStatusCode();
+            message = "Error de validación: " + exception.getMessage();
         }
 
-        LOGGER.error("🚨 Error inesperado en la aplicación:", exception);
+        if (exception instanceof WebApplicationException webEx) {
+            status = webEx.getResponse().getStatus();
+            message = webEx.getMessage(); // 🔥 Esto asegurará que el mensaje personalizado se use
+        }
 
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(new ErrorResponse("An unexpected error occurred", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()))
+        LOGGER.error("🚨 Error en la aplicación: " + message, exception);
+
+        return Response.status(status)
+                .entity(new ErrorResponse(message, status))
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
 
-    public static class ErrorResponse {
-        public String message;
-        public int status;
-
-        public ErrorResponse(String message, int status) {
-            this.message = message;
-            this.status = status;
-        }
-    }
+    public record ErrorResponse(String message, int status) {}
 }
+

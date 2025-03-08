@@ -12,7 +12,6 @@ import java.util.UUID;
 @ApplicationScoped
 public class AccountRepository implements PanacheRepositoryBase<Account, UUID> {
 
-
     @CacheResult(cacheName = "account-cache")
     public Uni<Account> findById(UUID id) {
         return find("id = ?1 AND deleted = false", id).firstResult();

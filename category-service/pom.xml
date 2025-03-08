@@ -42,28 +42,18 @@
             <artifactId>quarkus-cache</artifactId>
         </dependency>
 
-        <!-- Base de datos reactiva con PostgreSQL -->
+        <!--openapi-->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-hibernate-reactive-panache</artifactId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
         </dependency>
+
+
+        <!-- Base de datos reactiva con PostgreSQL -->
 
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-reactive-pg-client</artifactId>
-        </dependency>
-
-        <!-- MapStruct para conversión DTO <-> Entidad -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
-
-        <!-- Procesador de anotaciones de MapStruct -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!--Test-->
