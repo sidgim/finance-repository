@@ -1,8 +1,10 @@
 package com.glara.dto;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum TransactionType {
-    INGRESO("ingreso"),
-    GASTO("gasto");
+    INCOME("income"),
+    EXPENSE("expense");
 
     private final String valor;
 
@@ -10,6 +12,7 @@ public enum TransactionType {
         this.valor = valor;
     }
 
+    @JsonValue
     @Override
     public String toString() {
         return valor;
@@ -24,3 +27,4 @@ public enum TransactionType {
         throw new IllegalArgumentException("Tipo inválido: " + valor);
     }
 }
+

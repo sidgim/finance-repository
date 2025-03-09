@@ -58,14 +58,15 @@ public class TransactionRepository {
 
     public Uni<TransactionDTO> createTransaction(TransactionDTO transactionDTO) {
         String sql = SQLFileReader.readSQL("transaction", "insert.sql");
+        System.out.println("SQL: " + transactionDTO.type().toString());
         return pool.preparedQuery(sql)
                 .execute(Tuple.of(
-                        transactionDTO.description(),
                         transactionDTO.accountId(),
                         transactionDTO.subcategoryId(),
-                        transactionDTO.type().toString(),
+                        transactionDTO.vendorId(),
                         transactionDTO.amount(),
-                        transactionDTO.transactionDate()
+                        transactionDTO.description(),
+                        transactionDTO.type().toString()
                 ))
                 .onItem().transform(this::extractFirstRow)
                 .onFailure().invoke(error ->
@@ -80,7 +81,7 @@ public class TransactionRepository {
                 transactionDTO.subcategoryId(),
                 transactionDTO.type().toString(),
                 transactionDTO.amount(),
-                transactionDTO.transactionDate()
+                transactionDTO.createdAt()
         ).addValue(id);
         return pool.preparedQuery(sql)
                 .execute(params)
