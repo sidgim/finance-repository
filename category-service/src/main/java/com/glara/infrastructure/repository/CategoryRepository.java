@@ -9,7 +9,6 @@ import io.vertx.mutiny.sqlclient.SqlResult;
 import io.vertx.mutiny.sqlclient.Tuple;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,8 +16,12 @@ import java.util.UUID;
 @ApplicationScoped
 public class CategoryRepository {
 
+    private final Pool client;
+
     @Inject
-    Pool client;
+    public CategoryRepository(Pool client) {
+        this.client = client;
+    }
 
     public Uni<List<CategoryDTO>> findAll(Integer size, Integer page) {
         boolean usePagination = (size != null && size > 0) && (page != null && page > 0);
