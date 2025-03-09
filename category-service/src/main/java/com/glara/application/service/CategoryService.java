@@ -20,14 +20,13 @@ public class CategoryService {
     @Inject
     CategoryRepository repository;
 
-    // Obtener todas las categorías con mejor manejo de errores
     public Uni<List<CategoryDTO>> getAllCategories(Integer size, Integer page) {
         return repository.findAll( size,  page)
                 .onItem().ifNull().failWith(() -> new NotFoundException("Account not found"))
                 .onFailure().invoke(error -> LOGGER.error("Failed to getAccount: " + error.getMessage(), error));
     }
 
-    // Obtener una categoría por ID con mejor manejo de errores
+
     public Uni<CategoryDTO> getCategoryById(UUID id) {
         return repository.findById(id)
                 .onItem().ifNull().failWith(() -> new NotFoundException("category not found"))

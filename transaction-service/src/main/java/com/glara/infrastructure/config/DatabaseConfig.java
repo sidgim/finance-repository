@@ -39,4 +39,3 @@ public class DatabaseConfig {
         return Pool.pool(vertx, connectOptions, poolOptions);
     }
 }
-

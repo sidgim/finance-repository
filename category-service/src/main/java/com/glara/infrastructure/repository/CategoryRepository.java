@@ -32,7 +32,7 @@ public class CategoryRepository {
 
         return client.preparedQuery(sql)
                 .execute(params)
-                .onItem().transformToMulti( rows -> Multi.createFrom().iterable(rows))
+                .onItem().transformToMulti(Multi.createFrom()::iterable)
                 .onItem().transform(CategoryDTO::fromRow)
                 .collect().asList();
     }
