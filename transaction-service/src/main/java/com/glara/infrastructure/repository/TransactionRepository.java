@@ -20,9 +20,12 @@ import java.util.UUID;
 @ApplicationScoped
 public class TransactionRepository {
     private static final Logger log = Logger.getLogger(TransactionRepository.class);
+    private final Pool pool;
 
     @Inject
-    Pool pool;
+    public TransactionRepository(Pool pool) {
+        this.pool = pool;
+    }
 
     // Método privado para extraer el primer registro del RowSet
     private TransactionDTO extractFirstRow(RowSet<Row> rows) {

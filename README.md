@@ -54,8 +54,6 @@ You can then execute your native executable with: `./target/finance-microservice
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
 
-exportar variables de entorno
-$env:DB_USER="admin"
-$env:DB_PASSWORD="admin"
-$env:DB_URL="jdbc:postgresql://localhost:5432"
+En windows ejecutar
+./mvnw clean package -Pnative "-Dquarkus.native.container-build=true"
 

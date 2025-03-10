@@ -44,6 +44,11 @@ END IF;
         GRANT SELECT, INSERT, UPDATE, DELETE ON transaction TO transaction_service;
 END IF;
 
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'vendor') THEN
+        GRANT SELECT, INSERT, UPDATE, DELETE ON transaction TO transaction_service;
+
+END IF;
+
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'category') THEN
         GRANT SELECT, INSERT, UPDATE, DELETE ON category TO category_service;
 END IF;
