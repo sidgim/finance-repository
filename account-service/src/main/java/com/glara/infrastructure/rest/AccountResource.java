@@ -2,6 +2,7 @@ package com.glara.infrastructure.rest;
 
 import com.glara.application.service.AccountService;
 import com.glara.dto.AccountDTO;
+import com.glara.dto.TransactionDTO;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -53,4 +54,10 @@ public class AccountResource {
         return accountService.deleteAccountById(id);
     }
 
+
+    @GET
+    @Path("/{id}/transactions")
+    public Uni<AccountDTO> getTransactionsByAccount(@PathParam("id") UUID id) {
+        return accountService.getTransactionsForAccount(id);
+    }
 }

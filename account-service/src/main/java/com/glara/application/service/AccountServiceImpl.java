@@ -3,6 +3,8 @@ package com.glara.application.service;
 import com.glara.domain.model.AccountType;
 import com.glara.dto.AccountDTO;
 import com.glara.application.mapper.AccountMapper;
+import com.glara.dto.TransactionDTO;
+import com.glara.infrastructure.external.TransactionServiceClient;
 import com.glara.infrastructure.repository.AccountRepository;
 import com.glara.domain.model.Account;
 
@@ -13,6 +15,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -29,6 +32,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Inject
     AccountMapper accountMapper;
+
+    @RestClient
+    TransactionServiceClient transactionServiceClient;
 
     @WithSession
     @Override
@@ -84,5 +90,27 @@ public class AccountServiceImpl implements AccountService {
                 .replaceWith(true)
                 .onFailure().recoverWithNull().replaceWithVoid();
     }
+
+    public Uni<AccountDTO> getTransactionsForAccount(UUID id) {
+        return getAccount(id)
+                .onItem().transformToUni(accountDTO ->
+                        transactionServiceClient.getTransactionsByAccount(id)
+                                .onItem().transform(transactions -> {
+                                        System.out.println("Transactions: " + transactions);
+                                         return new AccountDTO(
+                                                accountDTO.id(),
+                                                accountDTO.name(),
+                                                accountDTO.currentBalance(),
+                                                accountDTO.accountTypeId(),
+                                                accountDTO.userId(),
+                                                transactions
+                                        );
+                                        }
+                                )
+                );
+    }
+
+
+
 
 }

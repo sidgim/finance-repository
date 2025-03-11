@@ -18,5 +18,5 @@ public interface AccountService {
 
     Uni<Void> deleteAccountById(UUID id);
 
-   // Uni<List<AccountDTO>> getAllAccountsByUserId(Long userId);
+    Uni<AccountDTO> getTransactionsForAccount(UUID id);
 }

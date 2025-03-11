@@ -1,6 +1,7 @@
 package com.glara.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 public record AccountDTO(
@@ -8,7 +9,7 @@ public record AccountDTO(
         String name,
         BigDecimal currentBalance,
         String accountTypeId,
-        String userId
+        String userId,
+        List<TransactionDTO> transactions
 ) {}
-
 
