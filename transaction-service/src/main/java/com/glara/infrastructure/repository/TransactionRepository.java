@@ -101,5 +101,16 @@ public class TransactionRepository {
                 .onFailure().invoke(error ->
                         log.errorf("Error al eliminar transacción con id %s: %s", id, error.getMessage()));
     }
+
+    public Uni<List<TransactionDTO>> findByAccountId(UUID accountId) {
+        String sql = SQLFileReader.readSQL("transaction", "find_all_transaction_by_account_id.sql");
+        return pool.preparedQuery(sql)
+                .execute(Tuple.of(accountId))
+                .onItem().transformToMulti(Multi.createFrom()::iterable)
+                .onItem().transform(TransactionDTO::fromRow)
+                .onFailure().invoke(error ->
+                        log.errorf("Error al buscar transacciones por id de cuenta %s: %s", accountId, error.getMessage()))
+                .collect().asList();
+    }
 }
 

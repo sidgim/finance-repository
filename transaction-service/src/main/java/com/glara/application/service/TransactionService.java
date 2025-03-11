@@ -41,4 +41,9 @@ public class TransactionService {
                 .onItem().ignore().andContinueWithNull();
     }
 
+    public Uni<List<TransactionDTO>> findByAccountId(UUID accountId) {
+        return transactionRepository.findByAccountId(accountId)
+                .onItem().ifNull().failWith(new Exception("Transactions not found for account ID: " + accountId));
+    }
+
 }

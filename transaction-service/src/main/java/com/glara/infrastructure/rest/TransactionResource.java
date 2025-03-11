@@ -47,4 +47,10 @@ public class TransactionResource {
         return transactionService.deleteTransaction(id);
     }
 
+    @GET
+    @Path("/account/{accountId}")
+    public Uni<List<TransactionDTO>> findByAccountId(@PathParam("accountId") UUID accountId) {
+        return transactionService.findByAccountId(accountId);
+    }
+
 }
